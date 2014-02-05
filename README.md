@@ -3,6 +3,8 @@ GeocodeSharp
 
 An async .NET client for the Google geocode API
 
+The object model closely follows the model [documented here](https://developers.google.com/maps/documentation/geocoding/#GeocodingResponses).
+
 ##Example
 ```c#
 using System;
