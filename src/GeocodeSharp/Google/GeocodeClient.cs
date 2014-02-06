@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace GeocodeSharp.Google
 {
-    public class GeocodeClient
+    public class GeocodeClient : IGeocodeClient
     {
         public async Task<GeocodeResponse> GeocodeAddress(string address, bool sensor)
         {
