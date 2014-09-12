@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace GeocodeSharp.Google
 {
@@ -19,7 +17,7 @@ namespace GeocodeSharp.Google
                     case "RANGE_INTERPOLATED": return LocationType.RangeInterpolated;
                     case "GEOMETRIC_CENTER": return LocationType.GeometricCenter;
                     case "APPROXIMATE": return LocationType.Approximate;
-                    default: return Google.LocationType.Unknown;
+                    default: return LocationType.Unknown;
                 }
             }
         }
