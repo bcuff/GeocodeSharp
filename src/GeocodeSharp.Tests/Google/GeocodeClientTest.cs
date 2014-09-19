@@ -52,5 +52,18 @@ namespace GeocodeSharp.Tests.Google
             Assert.AreEqual(-2, (int)result.Geometry.Location.Longitude);
             Assert.IsTrue(result.Types.Contains("street_address"));
         }
+
+        [TestMethod]
+        public async Task TestGeocodeAddressWithRegion()
+        {
+            var client = new GeocodeClient();
+            var result = await client.GeocodeAddress("London", region: "ca");
+            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
+            Assert.AreEqual("London, ON, Canada", result.Results.First().FormattedAddress);
+
+            result = await client.GeocodeAddress("London", region: "uk");
+            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
+            Assert.AreEqual("London, UK", result.Results.First().FormattedAddress);
+        }
     }
 }
