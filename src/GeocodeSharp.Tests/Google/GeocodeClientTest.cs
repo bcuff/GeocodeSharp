@@ -13,7 +13,7 @@ namespace GeocodeSharp.Tests.Google
         public async Task TestGeocodeAddressZeroResults()
         {
             var client = new GeocodeClient();
-            var result = await client.GeocodeAddress("", false);
+            var result = await client.GeocodeAddress("");
             Assert.AreEqual(GeocodeStatus.ZeroResults, result.Status);
         }
 
@@ -22,16 +22,16 @@ namespace GeocodeSharp.Tests.Google
         public async Task TestGeocodeAddressWithNullAddress()
         {
             var client = new GeocodeClient();
-            await client.GeocodeAddress(null, false);
+            await client.GeocodeAddress(null);
             Assert.Fail();
         }
 
         [TestMethod]
         public async Task TestGeocodeAddressWithPartialMatch()
         {
-            var address = "21 Henr St, Bristol, UK";
+            string address = "21 Henr St, Bristol, UK";
             var client = new GeocodeClient();
-            var result = await client.GeocodeAddress(address, false);
+            var result = await client.GeocodeAddress(address);
             Assert.AreEqual(GeocodeStatus.Ok, result.Status);
             Assert.AreEqual(true, result.Results.All(r => r.PartialMatch));
             Assert.AreEqual(true, result.Results.Length > 0);
@@ -40,9 +40,9 @@ namespace GeocodeSharp.Tests.Google
         [TestMethod]
         public async Task TestTestGeocodeAddressWithExactMatch()
         {
-            var address = "21 Henrietta St, Bristol, UK";
+            string address = "21 Henrietta St, Bristol, UK";
             var client = new GeocodeClient();
-            var response = await client.GeocodeAddress(address, false);
+            var response = await client.GeocodeAddress(address);
             Assert.AreEqual(GeocodeStatus.Ok, response.Status);
             Assert.AreEqual(false, response.Results.All(r => r.PartialMatch));
             Assert.AreEqual(true, response.Results.Length == 1);
