@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
+    <id>GeocodeSharp</id>
+    <version>1.0.2</version>
     <title>Async Google Geocode API for .NET</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <authors>Brandon Cuff</authors>
+    <owners>Brandon Cuff</owners>
     <licenseUrl>https://github.com/bcuff/GeocodeSharp/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/bcuff/GeocodeSharp</projectUrl>
     <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Added interface to facility mocks.</releaseNotes>
+    <description>An async wrapper of the Google Geocode API for .NET</description>
+    <releaseNotes>Added ability to use API key</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Geocode Address Maps Geo</tags>
   </metadata>
