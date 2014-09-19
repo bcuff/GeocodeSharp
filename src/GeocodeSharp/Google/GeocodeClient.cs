@@ -61,7 +61,7 @@ namespace GeocodeSharp.Google
             }
 
             return string.Concat(_baseUrl,
-                string.Format("address={0}&region={1}", Uri.EscapeDataString(address), region));
+                string.Format("address={0}&region={1}", Uri.EscapeDataString(address), Uri.EscapeDataString(region)));
         }
     }
 }
