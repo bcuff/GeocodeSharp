@@ -29,7 +29,7 @@ namespace GeocodeSharp.Tests.Google
         [TestMethod]
         public async Task TestGeocodeAddressWithPartialMatch()
         {
-            string address = "21 Henr St, Bristol, UK";
+            const string address = "21 Henr St, Bristol, UK";
             var client = new GeocodeClient();
             var result = await client.GeocodeAddress(address);
             Assert.AreEqual(GeocodeStatus.Ok, result.Status);
@@ -40,7 +40,7 @@ namespace GeocodeSharp.Tests.Google
         [TestMethod]
         public async Task TestTestGeocodeAddressWithExactMatch()
         {
-            string address = "21 Henrietta St, Bristol, UK";
+            const string address = "21 Henrietta St, Bristol, UK";
             var client = new GeocodeClient();
             var response = await client.GeocodeAddress(address);
             Assert.AreEqual(GeocodeStatus.Ok, response.Status);

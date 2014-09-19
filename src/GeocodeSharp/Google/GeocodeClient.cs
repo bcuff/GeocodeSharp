@@ -33,17 +33,11 @@ namespace GeocodeSharp.Google
         {
             if (address == null) throw new ArgumentNullException("address");
 
-            var url = string.Format(
-                "http://maps.googleapis.com/maps/api/geocode/json?address={0}",
-                Uri.EscapeDataString(address));
+            const string urlFormat = "{0}://maps.googleapis.com/maps/api/geocode/json?address={1}{2}";
 
-            if (!string.IsNullOrEmpty(_apiKey))
-            {
-                url = string.Format(url + "&key={0}", _apiKey);
-
-                // If an API key is specified we have to request via SSL.
-                url = url.Replace("http", "https");
-            }
+            var url = !string.IsNullOrEmpty(_apiKey)
+                ? string.Format(urlFormat, "https", Uri.EscapeDataString(address), "&key=" + Uri.EscapeDataString(_apiKey))
+                : string.Format(urlFormat, "http", Uri.EscapeDataString(address), string.Empty);
 
             string json;
             var request = WebRequest.CreateHttp(url);
