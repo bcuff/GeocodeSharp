@@ -10,6 +10,7 @@ namespace GeocodeSharp.Google
     public class GeocodeClient : IGeocodeClient
     {
         private readonly string _apiKey;
+        private readonly string _baseUrl;
 
         /// <summary>
         /// Initialize GeocodeClient without a Google API key and use default annonymouse access.
@@ -17,7 +18,7 @@ namespace GeocodeSharp.Google
         /// </summary>
         public GeocodeClient()
         {
-
+            _baseUrl = "http://maps.googleapis.com/maps/api/geocode/json?";
         }
 
         /// <summary>
@@ -27,17 +28,13 @@ namespace GeocodeSharp.Google
         public GeocodeClient(string apiKey)
         {
             _apiKey = apiKey;
+            _baseUrl = string.Format("https://maps.googleapis.com/maps/api/geocode/json?key={0}", Uri.EscapeDataString(_apiKey));
+            var builder = new StringBuilder();
         }
 
-        public async Task<GeocodeResponse> GeocodeAddress(string address, bool sensor = false)
+        public async Task<GeocodeResponse> GeocodeAddress(string address, bool sensor = false, string region = null)
         {
-            if (address == null) throw new ArgumentNullException("address");
-
-            const string urlFormat = "{0}://maps.googleapis.com/maps/api/geocode/json?address={1}{2}";
-
-            var url = !string.IsNullOrEmpty(_apiKey)
-                ? string.Format(urlFormat, "https", Uri.EscapeDataString(address), "&key=" + Uri.EscapeDataString(_apiKey))
-                : string.Format(urlFormat, "http", Uri.EscapeDataString(address), string.Empty);
+            var url = BuildUrl(address, region);
 
             string json;
             var request = WebRequest.CreateHttp(url);
@@ -52,6 +49,19 @@ namespace GeocodeSharp.Google
                 json = Encoding.UTF8.GetString(ms.ToArray());
             }
             return JsonConvert.DeserializeObject<GeocodeResponse>(json);
+        }
+
+        private string BuildUrl(string address, string region)
+        {
+            if (address == null) throw new ArgumentNullException("address");
+
+            if (string.IsNullOrWhiteSpace(region))
+            {
+                return string.Concat(_baseUrl, string.Format("address={0}", Uri.EscapeDataString(address)));
+            }
+
+            return string.Concat(_baseUrl,
+                string.Format("address={0}&region={1}", Uri.EscapeDataString(address), region));
         }
     }
 }
