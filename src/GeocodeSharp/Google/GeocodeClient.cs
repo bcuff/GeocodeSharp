@@ -32,7 +32,7 @@ namespace GeocodeSharp.Google
             var builder = new StringBuilder();
         }
 
-        public async Task<GeocodeResponse> GeocodeAddress(string address, bool sensor = false, string region = null)
+        public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null)
         {
             var url = BuildUrl(address, region);
 

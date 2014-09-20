@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>GeocodeSharp</id>
-    <version>1.0.3</version>
+    <version>$version$</version>
     <title>Async Google Geocode API for .NET</title>
     <authors>Brandon Cuff, alexinspire, Johan Nilsson</authors>
     <owners>Brandon Cuff</owners>
