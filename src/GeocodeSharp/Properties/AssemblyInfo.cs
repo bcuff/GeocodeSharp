@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GeocodeSharp")]
 [assembly: AssemblyDescription("An async wrapper of the Google Geocode API for .NET")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Brandon Cuff")]
+[assembly: AssemblyCompany("Brandon Cuff, alexinspire, Johan Nilsson")]
 [assembly: AssemblyProduct("GeocodeSharp")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]

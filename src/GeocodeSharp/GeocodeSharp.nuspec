@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>GeocodeSharp</id>
+    <id>$id$</id>
     <version>$version$</version>
     <title>Async Google Geocode API for .NET</title>
-    <authors>Brandon Cuff, alexinspire, Johan Nilsson</authors>
+    <authors>$author$</authors>
     <owners>Brandon Cuff</owners>
     <licenseUrl>https://github.com/bcuff/GeocodeSharp/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/bcuff/GeocodeSharp</projectUrl>
     <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>An async wrapper of the Google Geocode API for .NET</description>
-    <releaseNotes>Added support for the region parameter.</releaseNotes>
+    <description>$description$</description>
+    <releaseNotes>Removed obsolete sensor parameter</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Geocode Address Maps Geo</tags>
     <dependencies>
