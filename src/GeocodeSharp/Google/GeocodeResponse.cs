@@ -7,6 +7,7 @@ namespace GeocodeSharp.Google
         [JsonProperty("results")]
         public GeocodeResult[] Results { get; set; }
 
+        [JsonIgnore]
         public GeocodeStatus Status
         {
             get
