@@ -11,7 +11,7 @@
     <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Removed obsolete sensor parameter</releaseNotes>
+    <releaseNotes>Fixed redundant serialization of GeocodeResponse.Status</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Geocode Address Maps Geo</tags>
     <dependencies>
