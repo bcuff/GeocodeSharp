@@ -29,7 +29,6 @@ namespace GeocodeSharp.Google
         {
             _apiKey = apiKey;
             _baseUrl = string.Format("https://maps.googleapis.com/maps/api/geocode/json?key={0}", Uri.EscapeDataString(_apiKey));
-            var builder = new StringBuilder();
         }
 
         public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null)
