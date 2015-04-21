@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 
 namespace GeocodeSharp.Google
 {
+    /// <summary>
+    /// Encapsulates methods for executing geocode requests.
+    /// </summary>
     public class GeocodeClient : IGeocodeClient
     {
         private readonly string _apiKey;
@@ -31,6 +34,13 @@ namespace GeocodeSharp.Google
             _baseUrl = string.Format("https://maps.googleapis.com/maps/api/geocode/json?key={0}&", Uri.EscapeDataString(_apiKey));
         }
 
+        /// <summary>
+        /// Calls Google's geocode API with the specified address and optional region.
+        /// https://developers.google.com/maps/documentation/geocoding/#GeocodingRequests
+        /// </summary>
+        /// <param name="address">The street address that you want to geocode, in the format used by the national postal service of the country concerned. Additional address elements such as business names and unit, suite or floor numbers should be avoided.</param>
+        /// <param name="region">The region code, specified as a ccTLD ("top-level domain") two-character value. This parameter will only influence, not fully restrict, results from the geocoder.</param>
+        /// <returns>The geocode response.</returns>
         public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null)
         {
             var url = BuildUrl(address, region);
