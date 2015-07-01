@@ -13,7 +13,7 @@ namespace GeocodeSharp.Tests.Google
         public async Task TestGeocodeAddressZeroResults()
         {
             var client = new GeocodeClient();
-            var result = await client.GeocodeAddress("");
+            var result = await client.GeocodeAddress("nonexistent");
             Assert.AreEqual(GeocodeStatus.ZeroResults, result.Status);
         }
 
