@@ -38,6 +38,20 @@ namespace GeocodeSharp.Tests.Google
         }
 
         [TestMethod]
+        [Ignore]  // Unignore after adding client credentials.
+        public async Task TestGeocodeAddressWithPartialMatchWithApiForWork()
+        {
+            var clientId = "[ADD-CLIENT-ID-HERE]";
+            var cryptoKey = "[ADD-CRYPTO_KEY_HERE]";;
+            const string address = "21 Henr St, Bristol, UK";
+            var client = new GeocodeClient(clientId, cryptoKey);
+            var result = await client.GeocodeAddress(address);
+            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
+            Assert.AreEqual(true, result.Results.All(r => r.PartialMatch));
+            Assert.AreEqual(true, result.Results.Length > 0);
+        }
+        
+        [TestMethod]
         public async Task TestTestGeocodeAddressWithExactMatch()
         {
             const string address = "21 Henrietta St, Bristol, UK";
