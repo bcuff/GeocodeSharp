@@ -1,6 +1,6 @@
 ﻿namespace GeocodeSharp.Google
 {
-    public enum UsageMode
+    internal enum UsageMode
     {
         Free,
         ClientKey,
