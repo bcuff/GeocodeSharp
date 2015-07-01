@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -12,8 +13,12 @@ namespace GeocodeSharp.Google
     /// </summary>
     public class GeocodeClient : IGeocodeClient
     {
-        private readonly string _apiKey;
-        private readonly string _baseUrl;
+        private readonly UsageMode _mode;
+        private const string _domain = "https://maps.googleapis.com";
+        private const string _apiPath = "/maps/api/geocode/json?";
+        private readonly string _clientId;
+        private readonly string _cryptoKey;
+        private readonly string _clientKey;
 
         /// <summary>
         /// Initialize GeocodeClient without a Google API key and use default annonymouse access.
@@ -21,7 +26,7 @@ namespace GeocodeSharp.Google
         /// </summary>
         public GeocodeClient()
         {
-            _baseUrl = "http://maps.googleapis.com/maps/api/geocode/json?";
+            _mode = UsageMode.Free;
         }
 
         /// <summary>
@@ -30,8 +35,15 @@ namespace GeocodeSharp.Google
         /// <param name="apiKey">Google Maps API Key</param>
         public GeocodeClient(string apiKey)
         {
-            _apiKey = apiKey;
-            _baseUrl = string.Format("https://maps.googleapis.com/maps/api/geocode/json?key={0}&", Uri.EscapeDataString(_apiKey));
+            _clientKey = apiKey;
+            _mode = UsageMode.ClientKey;
+        }
+
+        public GeocodeClient(string clientId, string cryptoKey)
+        {
+            _clientId = clientId;
+            _cryptoKey = cryptoKey;
+            _mode = UsageMode.ApiForWork;
         }
 
         /// <summary>
@@ -62,15 +74,54 @@ namespace GeocodeSharp.Google
 
         private string BuildUrl(string address, string region)
         {
-            if (address == null) throw new ArgumentNullException("address");
+            if (string.IsNullOrWhiteSpace(address)) throw new ArgumentNullException("address");
+            
+            switch (_mode)
+            {
+                case UsageMode.Free:
+                    return BuildFreeUrl(address, region);
+                case UsageMode.ClientKey:
+                    return BuildClientKeyUrl(address, region);
+                case UsageMode.ApiForWork:
+                    return BuildApiForWorkUrl(address, region);
+                default:
+                    return BuildFreeUrl(address, region);
+            }
+        }
 
+        private string GetAddressPortion(string address, string region)
+        {
             if (string.IsNullOrWhiteSpace(region))
             {
-                return string.Concat(_baseUrl, string.Format("address={0}", Uri.EscapeDataString(address)));
+                return string.Format("address={0}", Uri.EscapeDataString(address));
             }
+            return string.Format("address={0}&region={1}", Uri.EscapeDataString(address), Uri.EscapeDataString(region));
+        }
 
-            return string.Concat(_baseUrl,
-                string.Format("address={0}&region={1}", Uri.EscapeDataString(address), Uri.EscapeDataString(region)));
+        private string BuildFreeUrl(string address, string region)
+        {
+            var addressPortion = GetAddressPortion(address, region);
+            return string.Format("{0}{1}{2}", _domain, _apiPath, addressPortion);
+        }
+
+        private string BuildClientKeyUrl(string address, string region)
+        {
+            var addressPortion = GetAddressPortion(address, region);
+            return string.Format("{0}{1}{2}&key={3}", _domain, _apiPath, addressPortion, _clientKey);
+        }
+
+        private string BuildApiForWorkUrl(string address, string region)
+        {
+            var addressPortion = GetAddressPortion(address, region);
+            var cryptoBytes = Convert.FromBase64String(_cryptoKey.Replace("-", "+").Replace("_", "/"));
+            var hashThis = string.Format("{0}{1}&client={2}", _apiPath, addressPortion, _clientId);
+            var hashThisBytes = Encoding.ASCII.GetBytes(hashThis);
+            using (var sha1 = new HMACSHA1(cryptoBytes))
+            {
+                var hash = sha1.ComputeHash(hashThisBytes);
+                var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
+                return string.Format("{0}{1}&signature={2}", _domain, hashThis, signature);
+            }
         }
     }
 }

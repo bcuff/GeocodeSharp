@@ -68,6 +68,7 @@
     <Compile Include="Google\GeoViewport.cs" />
     <Compile Include="Google\IGeocodeClient.cs" />
     <Compile Include="Google\LocationType.cs" />
+    <Compile Include="Google\UsageMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
