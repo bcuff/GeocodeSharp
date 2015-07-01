@@ -39,6 +39,14 @@ namespace GeocodeSharp.Google
             _mode = UsageMode.ClientKey;
         }
 
+        /// <summary>
+        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default annonymous throttling.
+        /// </summary>
+        /// <param name="clientId">The client ID. Applicable when using Maps API for Work.</param>
+        /// <param name="cryptoKey">The base64 encoded crypto key. Applicable when using Maps API for Work.</param>
+        /// <remarks>
+        /// See - https://developers.google.com/maps/documentation/business/webservices/#client_id
+        /// </remarks>
         public GeocodeClient(string clientId, string cryptoKey)
         {
             _clientId = clientId;
