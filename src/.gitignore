@@ -135,3 +135,5 @@ App_Data/*.ldf
 
 # Roslyn temp files
 *.sln.ide/
+# Editor config
+.editorconfig

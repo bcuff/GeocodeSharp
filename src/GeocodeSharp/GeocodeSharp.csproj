@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Google\AddressComponent.cs" />
+    <Compile Include="Google\ComponentFilter.cs" />
     <Compile Include="Google\GeocodeClient.cs" />
     <Compile Include="Google\GeocodeResponse.cs" />
     <Compile Include="Google\GeocodeResult.cs" />

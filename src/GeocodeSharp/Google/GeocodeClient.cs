@@ -60,11 +60,29 @@ namespace GeocodeSharp.Google
         /// </summary>
         /// <param name="address">The street address that you want to geocode, in the format used by the national postal service of the country concerned. Additional address elements such as business names and unit, suite or floor numbers should be avoided.</param>
         /// <param name="region">The region code, specified as a ccTLD ("top-level domain") two-character value. This parameter will only influence, not fully restrict, results from the geocoder.</param>
+        /// <param name="filter">A component filter for which you wish to obtain a geocode. The component filter swill fully restrict the results from the geocoder. Only the results that match all the filters will be returned. Each address component can only be specified either in the address parameter or as a component filter, but not both. Doing so may result in ZERO_RESULTS.</param>
         /// <returns>The geocode response.</returns>
-        public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null)
+        public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null, ComponentFilter filter = null)
         {
-            var url = BuildUrl(address, region);
+            var url = BuildUrl(address, region, filter);
+            return await DoRequestAsync(url);
+        }
 
+        /// <summary>
+        /// Calls Google's geocode API with the specified address and optional region.
+        /// https://developers.google.com/maps/documentation/geocoding/#GeocodingRequests
+        /// </summary>
+        /// <param name="filter">A component filter for which you wish to obtain a geocode. The component filter swill fully restrict the results from the geocoder. Only the results that match all the filters will be returned. Each address component can only be specified either in the address parameter or as a component filter, but not both. Doing so may result in ZERO_RESULTS.</param>
+        /// <param name="region">The region code, specified as a ccTLD ("top-level domain") two-character value. This parameter will only influence, not fully restrict, results from the geocoder.</param>
+        /// <returns>The geocode response.</returns>
+        public async Task<GeocodeResponse> GeocodeComponentFilter(ComponentFilter filter, string region = null)
+        {
+            var url = BuildUrl(filter, region);
+            return await DoRequestAsync(url);
+        }
+
+        private async Task<GeocodeResponse> DoRequestAsync(string url)
+        {
             string json;
             var request = WebRequest.CreateHttp(url);
             using (var ms = new MemoryStream())
@@ -72,55 +90,84 @@ namespace GeocodeSharp.Google
                 using (var response = await request.GetResponseAsync())
                 using (var body = response.GetResponseStream())
                 {
-                    if (body != null) await body.CopyToAsync(ms);
+                    if (body != null)
+                        await body.CopyToAsync(ms);
                 }
 
                 json = Encoding.UTF8.GetString(ms.ToArray());
             }
+
             return JsonConvert.DeserializeObject<GeocodeResponse>(json);
         }
 
-        private string BuildUrl(string address, string region)
+        private string BuildUrl(ComponentFilter filter, string region)
+        {
+            if (filter == null)
+                throw new ArgumentNullException("filter");
+            var addressPortion = BuildAddressPortion(filter, region);
+            var authPortion = BuildAuthPortion(addressPortion);
+            return string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion);
+        }
+
+        private string BuildUrl(string address, string region, ComponentFilter filter)
         {
             if (string.IsNullOrWhiteSpace(address)) throw new ArgumentNullException("address");
-            
+            var addressPortion = BuildAddressPortion(address, region, filter);
+            var authPortion = BuildAuthPortion(addressPortion);
+            return string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion);
+        }
+
+        private string BuildAuthPortion(string addressPortion)
+        {
             switch (_mode)
             {
                 case UsageMode.Free:
-                    return BuildFreeUrl(address, region);
+                    return string.Empty;
                 case UsageMode.ClientKey:
-                    return BuildClientKeyUrl(address, region);
+                    return string.Format("&key={0}", _clientKey);
                 case UsageMode.ApiForWork:
-                    return BuildApiForWorkUrl(address, region);
+                    return BuildApiForWorkUrl(addressPortion);
                 default:
-                    return BuildFreeUrl(address, region);
+                    return string.Empty;
             }
         }
 
-        private string GetAddressPortion(string address, string region)
+        private string BuildAddressPortion(ComponentFilter filter, string region)
         {
-            if (string.IsNullOrWhiteSpace(region))
+            var filterString = filter.ToUrlParameters();
+            if(string.IsNullOrWhiteSpace(filterString))
+                throw new ArgumentException("Component filter doesn't contain any component", "filter");
+            var addressPortion = string.Format("components={0}", filterString);
+            if (!string.IsNullOrWhiteSpace(region))
             {
-                return string.Format("address={0}", Uri.EscapeDataString(address));
+                addressPortion += string.Format("&region={0}", region);
             }
-            return string.Format("address={0}&region={1}", Uri.EscapeDataString(address), Uri.EscapeDataString(region));
+
+            return addressPortion;
         }
 
-        private string BuildFreeUrl(string address, string region)
+        private string BuildAddressPortion(string address, string region, ComponentFilter filter)
         {
-            var addressPortion = GetAddressPortion(address, region);
-            return string.Format("{0}{1}{2}", _domain, _apiPath, addressPortion);
+            var addressPortion = string.Format("address={0}", address);
+            if (!string.IsNullOrWhiteSpace(region))
+            {
+                addressPortion += string.Format("&region={0}", region);
+            }
+
+            if (filter != null)
+            {
+                var filterString = filter.ToUrlParameters();
+                if (!string.IsNullOrWhiteSpace(filterString))
+                {
+                    addressPortion += string.Format("&components={0}", filterString);
+                }
+            }
+
+            return addressPortion;
         }
 
-        private string BuildClientKeyUrl(string address, string region)
+        private string BuildApiForWorkUrl(string addressPortion)
         {
-            var addressPortion = GetAddressPortion(address, region);
-            return string.Format("{0}{1}{2}&key={3}", _domain, _apiPath, addressPortion, _clientKey);
-        }
-
-        private string BuildApiForWorkUrl(string address, string region)
-        {
-            var addressPortion = GetAddressPortion(address, region);
             var cryptoBytes = Convert.FromBase64String(_cryptoKey.Replace("-", "+").Replace("_", "/"));
             var hashThis = string.Format("{0}{1}&client={2}", _apiPath, addressPortion, _clientId);
             var hashThisBytes = Encoding.ASCII.GetBytes(hashThis);
@@ -128,7 +175,7 @@ namespace GeocodeSharp.Google
             {
                 var hash = sha1.ComputeHash(hashThisBytes);
                 var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
-                return string.Format("{0}{1}&signature={2}", _domain, hashThis, signature);
+                return string.Format("&client={0}&signature={1}", _clientId, signature);
             }
         }
     }
