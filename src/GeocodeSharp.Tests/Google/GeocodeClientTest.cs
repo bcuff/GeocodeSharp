@@ -10,6 +10,16 @@ namespace GeocodeSharp.Tests.Google
     public class GeocodeClientTest
     {
         [TestMethod]
+        public async Task TestComponentFilter()
+        {
+            var client = new GeocodeClient();
+            var result = await client.GeocodeAddress("santa cruz");
+            Assert.IsTrue(result.Results.Count() > 1, "'santa cruz' should return multiple results when used without component filter.");
+            result = await client.GeocodeAddress("santa cruz", null, new ComponentFilter { Country = "es" });
+            Assert.IsTrue(result.Results.Count() == 1, "'santa cruz' should return singler result when used with Country=es filter");
+        }
+
+        [TestMethod]
         public async Task TestGeocodeAddressZeroResults()
         {
             var client = new GeocodeClient();
