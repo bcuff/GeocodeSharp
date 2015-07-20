@@ -140,7 +140,7 @@ namespace GeocodeSharp.Google
             var addressPortion = string.Format("components={0}", filterString);
             if (!string.IsNullOrWhiteSpace(region))
             {
-                addressPortion += string.Format("&region={0}", region);
+                addressPortion += string.Format("&region={0}", Uri.EscapeDataString(region));
             }
 
             return addressPortion;
@@ -148,10 +148,10 @@ namespace GeocodeSharp.Google
 
         private string BuildAddressPortion(string address, string region, ComponentFilter filter)
         {
-            var addressPortion = string.Format("address={0}", address);
+            var addressPortion = string.Format("address={0}", Uri.EscapeDataString(address));
             if (!string.IsNullOrWhiteSpace(region))
             {
-                addressPortion += string.Format("&region={0}", region);
+                addressPortion += string.Format("&region={0}", Uri.EscapeDataString(region));
             }
 
             if (filter != null)
