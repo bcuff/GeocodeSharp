@@ -124,7 +124,7 @@ namespace GeocodeSharp.Google
                 case UsageMode.Free:
                     return string.Empty;
                 case UsageMode.ClientKey:
-                    return string.Format("&key={0}", _clientKey);
+                    return string.Format("&api_key={0}", _clientKey);
                 case UsageMode.ApiForWork:
                     return BuildApiForWorkUrl(addressPortion);
                 default:
