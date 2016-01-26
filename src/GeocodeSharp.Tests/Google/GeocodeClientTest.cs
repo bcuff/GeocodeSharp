@@ -23,7 +23,7 @@ namespace GeocodeSharp.Tests.Google
         public async Task TestGeocodeAddressZeroResults()
         {
             var client = new GeocodeClient();
-            var result = await client.GeocodeAddress("nonexistent");
+            var result = await client.GeocodeAddress(Guid.NewGuid().ToString("N"));
             Assert.AreEqual(GeocodeStatus.ZeroResults, result.Status);
         }
 
@@ -70,10 +70,12 @@ namespace GeocodeSharp.Tests.Google
             Assert.AreEqual(GeocodeStatus.Ok, response.Status);
             Assert.AreEqual(false, response.Results.All(r => r.PartialMatch));
             Assert.AreEqual(true, response.Results.Length == 1);
+
             var result = response.Results[0];
-            Assert.AreEqual("21 Henrietta Street, Bristol, City of Bristol BS5 6HU, UK", result.FormattedAddress);
+            Assert.AreEqual("21 Henrietta St, Bristol, City of Bristol BS5 6HU, UK", result.FormattedAddress);
             Assert.AreEqual(51, (int)result.Geometry.Location.Latitude);
             Assert.AreEqual(-2, (int)result.Geometry.Location.Longitude);
+            Assert.AreEqual("ChIJS_spyTiOcUgRfgVi31-TvpY", result.PlaceId);
             Assert.IsTrue(result.Types.Contains("street_address"));
         }
 
