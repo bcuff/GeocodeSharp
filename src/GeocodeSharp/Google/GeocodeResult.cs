@@ -16,6 +16,9 @@ namespace GeocodeSharp.Google
         [JsonProperty("partial_match")]
         public bool PartialMatch { get; set; }
 
+        [JsonProperty("place_id")]
+        public string PlaceId { get; set; }
+
         [JsonProperty("types")]
         public string[] Types { get; set; }
     }
