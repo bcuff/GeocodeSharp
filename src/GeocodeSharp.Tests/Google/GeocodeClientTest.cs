@@ -15,7 +15,7 @@ namespace GeocodeSharp.Tests.Google
             var client = new GeocodeClient();
             var result = await client.GeocodeAddress("santa cruz");
             Assert.IsTrue(result.Results.Count() > 1, "'santa cruz' should return multiple results when used without component filter.");
-            result = await client.GeocodeAddress("santa cruz", null, new ComponentFilter { Country = "es" });
+            result = await client.GeocodeAddress("santa cruz", filter: new ComponentFilter { Country = "es" });
             Assert.IsTrue(result.Results.Count() == 1, "'santa cruz' should return singler result when used with Country=es filter");
         }
 
@@ -90,6 +90,17 @@ namespace GeocodeSharp.Tests.Google
             result = await client.GeocodeAddress("London", region: "uk");
             Assert.AreEqual(GeocodeStatus.Ok, result.Status);
             Assert.AreEqual("London, UK", result.Results.First().FormattedAddress);
+        }
+
+        [TestMethod]
+        public async Task TestGeocodeAddressWithLanguage()
+        {
+            var client = new GeocodeClient();
+            var spanishResponse = await client.GeocodeAddress("Madrid, Caja Mágica", language: "es");
+
+            var result = spanishResponse.Results.First();
+            Assert.AreEqual("Área Metropolitalitana y Corredor del Henares", result.AddressComponents[2].LongName);
+            Assert.AreEqual("España", result.AddressComponents[5].LongName);
         }
     }
 }
