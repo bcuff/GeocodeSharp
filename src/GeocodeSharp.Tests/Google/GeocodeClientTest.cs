@@ -72,7 +72,7 @@ namespace GeocodeSharp.Tests.Google
             Assert.AreEqual(true, response.Results.Length == 1);
 
             var result = response.Results[0];
-            Assert.AreEqual("21 Henrietta St, Bristol, City of Bristol BS5 6HU, UK", result.FormattedAddress);
+            Assert.AreEqual("21 Henrietta St, Bristol BS5 6HU, UK", result.FormattedAddress);
             Assert.AreEqual(51, (int)result.Geometry.Location.Latitude);
             Assert.AreEqual(-2, (int)result.Geometry.Location.Longitude);
             Assert.AreEqual("ChIJS_spyTiOcUgRfgVi31-TvpY", result.PlaceId);
