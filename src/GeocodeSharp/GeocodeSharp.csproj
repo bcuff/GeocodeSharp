@@ -71,7 +71,6 @@
     <Compile Include="Google\IGeocodeClient.cs" />
     <Compile Include="Google\LocationType.cs" />
     <Compile Include="Google\UsageMode.cs" />
-    <Compile Include="NginxProxyRequestBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestBuilderBase.cs" />
   </ItemGroup>
