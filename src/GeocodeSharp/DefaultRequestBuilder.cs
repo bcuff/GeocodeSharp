@@ -10,7 +10,6 @@ namespace GeocodeSharp
     {
         protected DefaultRequestBuilder(string domain, bool isProtected = true) : base(domain, isProtected)
         {
-            
         }
 
         public DefaultRequestBuilder()
@@ -19,7 +18,6 @@ namespace GeocodeSharp
 
         public DefaultRequestBuilder(string apiKey): base(apiKey)
         {
-
         }
 
         public DefaultRequestBuilder(string clientId, string cryptoKey): base(clientId, cryptoKey)

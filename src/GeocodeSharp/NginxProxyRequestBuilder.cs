@@ -9,12 +9,15 @@ namespace GeocodeSharp
         {
         }
 
-        public NginxProxyRequestBuilder(string apiKey) : base(apiKey)
+        public NginxProxyRequestBuilder(string domain, string apiKey): this(domain)
         {
+            _clientKey = apiKey;
         }
 
-        public NginxProxyRequestBuilder(string clientId, string cryptoKey) : base(clientId, cryptoKey)
+        public NginxProxyRequestBuilder(string domain, string clientId, string cryptoKey): this(domain)
         {
+            _clientId = clientId;
+            _cryptoKey = cryptoKey;
         }
     }
 }

@@ -5,10 +5,10 @@ namespace GeocodeSharp
 {
     public abstract class RequestBuilderBase
     {
-        protected readonly string _clientKey;
-        protected readonly UsageMode _mode;
-        protected readonly string _clientId;
-        protected readonly string _cryptoKey;
+        protected string _clientKey;
+        protected UsageMode _mode;
+        protected string _clientId;
+        protected string _cryptoKey;
 
         protected string _domain = "https://maps.googleapis.com";
         protected const string _apiPath = "/maps/api/geocode/json?";
