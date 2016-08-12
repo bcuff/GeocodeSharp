@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultRequestBuilder.cs" />
     <Compile Include="Google\AddressComponent.cs" />
     <Compile Include="Google\ComponentFilter.cs" />
     <Compile Include="Google\GeocodeClient.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Google\LocationType.cs" />
     <Compile Include="Google\UsageMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestBuilderBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

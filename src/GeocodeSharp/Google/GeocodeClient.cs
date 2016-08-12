@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -13,45 +12,26 @@ namespace GeocodeSharp.Google
     /// </summary>
     public class GeocodeClient : IGeocodeClient
     {
-        private readonly UsageMode _mode;
-        private const string _domain = "https://maps.googleapis.com";
-        private const string _apiPath = "/maps/api/geocode/json?";
-        private readonly string _clientId;
-        private readonly string _cryptoKey;
-        private readonly string _clientKey;
+        private RequestBuilderBase _requestBuilder;
 
-        /// <summary>
-        /// Initialize GeocodeClient without a Google API key and use default annonymouse access.
-        /// NOTE: Throttling may apply.
-        /// </summary>
         public GeocodeClient()
         {
-            _mode = UsageMode.Free;
+            _requestBuilder = new DefaultRequestBuilder();
         }
 
-        /// <summary>
-        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default annonymous throttling.
-        /// </summary>
-        /// <param name="apiKey">Google Maps API Key</param>
         public GeocodeClient(string apiKey)
         {
-            _clientKey = apiKey;
-            _mode = UsageMode.ClientKey;
+            _requestBuilder = new DefaultRequestBuilder(apiKey);
         }
 
-        /// <summary>
-        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default annonymous throttling.
-        /// </summary>
-        /// <param name="clientId">The client ID. Applicable when using Maps API for Work.</param>
-        /// <param name="cryptoKey">The base64 encoded crypto key. Applicable when using Maps API for Work.</param>
-        /// <remarks>
-        /// See - https://developers.google.com/maps/documentation/business/webservices/#client_id
-        /// </remarks>
         public GeocodeClient(string clientId, string cryptoKey)
         {
-            _clientId = clientId;
-            _cryptoKey = cryptoKey;
-            _mode = UsageMode.ApiForWork;
+            _requestBuilder = new DefaultRequestBuilder(clientId, cryptoKey);
+        }
+
+        public GeocodeClient(RequestBuilderBase requestBuilder)
+        {
+            _requestBuilder = requestBuilder;
         }
 
         /// <summary>
@@ -65,8 +45,8 @@ namespace GeocodeSharp.Google
         /// <returns>The geocode response.</returns>
         public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null, ComponentFilter filter = null, string language = null)
         {
-            var url = BuildUrl(address, region, language, filter);
-            return await DoRequestAsync(url);
+            var request = _requestBuilder.Build(filter, region, address, language);
+            return await ExecuteRequestAsync(request);
         }
 
         /// <summary>
@@ -78,14 +58,14 @@ namespace GeocodeSharp.Google
         /// <returns>The geocode response.</returns>
         public async Task<GeocodeResponse> GeocodeComponentFilter(ComponentFilter filter, string region = null)
         {
-            var url = BuildUrl(filter, region);
-            return await DoRequestAsync(url);
+            var request = _requestBuilder.Build(filter, region);
+            return await ExecuteRequestAsync(request);
         }
 
-        private async Task<GeocodeResponse> DoRequestAsync(string url)
+        private async Task<GeocodeResponse> ExecuteRequestAsync(HttpWebRequest request)
         {
             string json;
-            var request = WebRequest.CreateHttp(url);
+
             using (var ms = new MemoryStream())
             {
                 using (var response = await request.GetResponseAsync())
@@ -99,90 +79,6 @@ namespace GeocodeSharp.Google
             }
 
             return JsonConvert.DeserializeObject<GeocodeResponse>(json);
-        }
-
-        private string BuildUrl(ComponentFilter filter, string region)
-        {
-            if (filter == null)
-                throw new ArgumentNullException("filter");
-            var addressPortion = BuildAddressPortion(filter, region);
-            var authPortion = BuildAuthPortion(addressPortion);
-            return string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion);
-        }
-
-        private string BuildUrl(string address, string region, string language, ComponentFilter filter)
-        {
-            if (string.IsNullOrWhiteSpace(address)) throw new ArgumentNullException("address");
-            var addressPortion = BuildAddressPortion(address, region, language, filter);
-            var authPortion = BuildAuthPortion(addressPortion);
-            return string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion);
-        }
-
-        private string BuildAuthPortion(string addressPortion)
-        {
-            switch (_mode)
-            {
-                case UsageMode.Free:
-                    return string.Empty;
-                case UsageMode.ClientKey:
-                    return string.Format("&key={0}", _clientKey);
-                case UsageMode.ApiForWork:
-                    return BuildApiForWorkUrl(addressPortion);
-                default:
-                    return string.Empty;
-            }
-        }
-
-        private string BuildAddressPortion(ComponentFilter filter, string region)
-        {
-            var filterString = filter.ToUrlParameters();
-            if(string.IsNullOrWhiteSpace(filterString))
-                throw new ArgumentException("Component filter doesn't contain any component", "filter");
-            var addressPortion = string.Format("components={0}", filterString);
-            if (!string.IsNullOrWhiteSpace(region))
-            {
-                addressPortion += string.Format("&region={0}", Uri.EscapeDataString(region));
-            }
-
-            return addressPortion;
-        }
-
-        private string BuildAddressPortion(string address, string region, string language, ComponentFilter filter)
-        {
-            var addressPortion = string.Format("address={0}", Uri.EscapeDataString(address));
-            if (!string.IsNullOrWhiteSpace(region))
-            {
-                addressPortion += string.Format("&region={0}", Uri.EscapeDataString(region));
-            }
-
-            if (!string.IsNullOrWhiteSpace(language))
-            {
-                addressPortion += string.Format("&language={0}", Uri.EscapeDataString(language));
-            }
-
-            if (filter != null)
-            {
-                var filterString = filter.ToUrlParameters();
-                if (!string.IsNullOrWhiteSpace(filterString))
-                {
-                    addressPortion += string.Format("&components={0}", filterString);
-                }
-            }
-
-            return addressPortion;
-        }
-
-        private string BuildApiForWorkUrl(string addressPortion)
-        {
-            var cryptoBytes = Convert.FromBase64String(_cryptoKey.Replace("-", "+").Replace("_", "/"));
-            var hashThis = string.Format("{0}{1}&client={2}", _apiPath, addressPortion, _clientId);
-            var hashThisBytes = Encoding.ASCII.GetBytes(hashThis);
-            using (var sha1 = new HMACSHA1(cryptoBytes))
-            {
-                var hash = sha1.ComputeHash(hashThisBytes);
-                var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
-                return string.Format("&client={0}&signature={1}", _clientId, signature);
-            }
         }
     }
 }
