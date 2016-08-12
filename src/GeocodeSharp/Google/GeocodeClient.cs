@@ -20,6 +20,8 @@ namespace GeocodeSharp.Google
         private readonly string _cryptoKey;
         private readonly string _clientKey;
 
+        private IGeocodeProxyProvider _proxyProvider;
+
         /// <summary>
         /// Initialize GeocodeClient without a Google API key and use default anonymous access.
         /// NOTE: Throttling may apply.
@@ -27,16 +29,27 @@ namespace GeocodeSharp.Google
         public GeocodeClient()
         {
             _mode = UsageMode.Free;
+            _proxyProvider = new DefaultGeocodeProxyProvider();
+        }
+
+        public GeocodeClient(IGeocodeProxyProvider proxyProvider): this()
+        {
+            _proxyProvider = proxyProvider;
         }
 
         /// <summary>
         /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default anonymous throttling.
         /// </summary>
         /// <param name="apiKey">Google Maps API Key</param>
-        public GeocodeClient(string apiKey)
+        public GeocodeClient(string apiKey): this()
         {
             _clientKey = apiKey;
             _mode = UsageMode.ClientKey;
+        }
+
+        public GeocodeClient(IGeocodeProxyProvider proxyProvider, string apiKey): this(apiKey)
+        {
+            _proxyProvider = proxyProvider;
         }
 
         /// <summary>
@@ -47,11 +60,16 @@ namespace GeocodeSharp.Google
         /// <remarks>
         /// See - https://developers.google.com/maps/documentation/business/webservices/#client_id
         /// </remarks>
-        public GeocodeClient(string clientId, string cryptoKey)
+        public GeocodeClient(string clientId, string cryptoKey): this()
         {
             _clientId = clientId;
             _cryptoKey = cryptoKey;
             _mode = UsageMode.ApiForWork;
+        }
+
+        public GeocodeClient(IGeocodeProxyProvider proxyProvider, string clientId, string cryptoKey): this(clientId, cryptoKey)
+        {
+            _proxyProvider = proxyProvider;
         }
 
         /// <summary>
@@ -65,8 +83,8 @@ namespace GeocodeSharp.Google
         /// <returns>The geocode response.</returns>
         public async Task<GeocodeResponse> GeocodeAddress(string address, string region = null, ComponentFilter filter = null, string language = null)
         {
-            var url = BuildUrl(address, region, language, filter);
-            return await DoRequestAsync(url);
+            var request = BuildRequest(address, region, language, filter);
+            return await DoRequestAsync(request);
         }
 
         /// <summary>
@@ -78,14 +96,13 @@ namespace GeocodeSharp.Google
         /// <returns>The geocode response.</returns>
         public async Task<GeocodeResponse> GeocodeComponentFilter(ComponentFilter filter, string region = null)
         {
-            var url = BuildUrl(filter, region);
-            return await DoRequestAsync(url);
+            var request = BuildRequest(filter, region);
+            return await DoRequestAsync(request);
         }
 
-        private async Task<GeocodeResponse> DoRequestAsync(string url)
+        private async Task<GeocodeResponse> DoRequestAsync(HttpWebRequest request)
         {
             string json;
-            var request = WebRequest.CreateHttp(url);
             using (var ms = new MemoryStream())
             {
                 using (var response = await request.GetResponseAsync())
@@ -101,21 +118,21 @@ namespace GeocodeSharp.Google
             return JsonConvert.DeserializeObject<GeocodeResponse>(json);
         }
 
-        private string BuildUrl(ComponentFilter filter, string region)
+        private HttpWebRequest BuildRequest(ComponentFilter filter, string region)
         {
             if (filter == null)
                 throw new ArgumentNullException("filter");
             var addressPortion = BuildAddressPortion(filter, region);
             var authPortion = BuildAuthPortion(addressPortion);
-            return string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion);
+            return _proxyProvider.CreateRequest(string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion));
         }
 
-        private string BuildUrl(string address, string region, string language, ComponentFilter filter)
+        private HttpWebRequest BuildRequest(string address, string region, string language, ComponentFilter filter)
         {
             if (string.IsNullOrWhiteSpace(address)) throw new ArgumentNullException("address");
             var addressPortion = BuildAddressPortion(address, region, language, filter);
             var authPortion = BuildAuthPortion(addressPortion);
-            return string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion);
+            return _proxyProvider.CreateRequest(string.Format("{0}{1}{2}{3}", _domain, _apiPath, addressPortion, authPortion));
         }
 
         private string BuildAuthPortion(string addressPortion)

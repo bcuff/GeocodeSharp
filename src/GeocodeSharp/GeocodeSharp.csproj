@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultGeocodeProxyProvider.cs" />
     <Compile Include="Google\AddressComponent.cs" />
     <Compile Include="Google\ComponentFilter.cs" />
     <Compile Include="Google\GeocodeClient.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Google\IGeocodeClient.cs" />
     <Compile Include="Google\LocationType.cs" />
     <Compile Include="Google\UsageMode.cs" />
+    <Compile Include="IGeocodeProxyProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
