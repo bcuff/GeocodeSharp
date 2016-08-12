@@ -21,7 +21,7 @@ namespace GeocodeSharp.Google
         private readonly string _clientKey;
 
         /// <summary>
-        /// Initialize GeocodeClient without a Google API key and use default annonymouse access.
+        /// Initialize GeocodeClient without a Google API key and use default anonymous access.
         /// NOTE: Throttling may apply.
         /// </summary>
         public GeocodeClient()
@@ -30,7 +30,7 @@ namespace GeocodeSharp.Google
         }
 
         /// <summary>
-        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default annonymous throttling.
+        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default anonymous throttling.
         /// </summary>
         /// <param name="apiKey">Google Maps API Key</param>
         public GeocodeClient(string apiKey)
@@ -40,7 +40,7 @@ namespace GeocodeSharp.Google
         }
 
         /// <summary>
-        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default annonymous throttling.
+        /// Initialize GeocodeClient with your Google API key to utilize it in the requests to Google and bypass the default anonymous throttling.
         /// </summary>
         /// <param name="clientId">The client ID. Applicable when using Maps API for Work.</param>
         /// <param name="cryptoKey">The base64 encoded crypto key. Applicable when using Maps API for Work.</param>
