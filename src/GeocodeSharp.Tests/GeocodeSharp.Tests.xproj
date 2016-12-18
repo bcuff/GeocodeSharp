@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>B16BCFA3-57CF-407A-ABD3-E46756673F67</ProjectGuid>
-    <RootNamespace>GeocodeSharp</RootNamespace>
+    <ProjectGuid>E1924EF3-FAAE-44FD-98E3-F32EB42422D7</ProjectGuid>
+    <RootNamespace>GeocodeSharp.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
@@ -16,6 +16,9 @@
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleFolder Include=".vs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

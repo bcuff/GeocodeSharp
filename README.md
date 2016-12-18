@@ -14,7 +14,7 @@ using GeocodeSharp.Google;
 
 var address = "21 Henrietta St, Bristol, UK";
 var client = new GeocodeClient();
-var response = await client.GeocodeAddress(address, false);
+var response = await client.GeocodeAddress(address);
 if (response.Status == GeocodeStatus.Ok)
 {
     var firstResult = response.Results.First();
