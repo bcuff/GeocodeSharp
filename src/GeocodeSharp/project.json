@@ -3,6 +3,9 @@
     "NETStandard.Library": "1.6.0",
     "Newtonsoft.Json": "9.0.1"
   },
+  "buildOptions": {
+    "keyFile": "key.snk"
+  },
 
   "frameworks": {
     "netstandard1.6": {
