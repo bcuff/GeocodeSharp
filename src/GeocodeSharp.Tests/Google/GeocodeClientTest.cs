@@ -3,65 +3,63 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GeocodeSharp.Google;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace GeocodeSharp.Tests.Google
 {
-    [TestClass]
-    public class GeocodeClientTest
+    public class GeocodeClientTestFixture
     {
-        static IGeocodeClient _client;
-
-        [ClassInitialize]
-        public static void ClassSetup(TestContext testContext)
+        public GeocodeClientTestFixture()
         {
-            _client = new GeocodeClient();
+            Client = new GeocodeClient();
         }
-
-        [TestInitialize]
-        public void Setup()
+        public IGeocodeClient Client;
+    }
+    public class GeocodeClientTest : IClassFixture<GeocodeClientTestFixture>
+    {
+        readonly GeocodeClientTestFixture ClientFixture;
+        
+        public GeocodeClientTest(GeocodeClientTestFixture fixture)
         {
             //this is just to be sure we dont hit rate limit
             Thread.Sleep(TimeSpan.FromMilliseconds(500));
+            ClientFixture = fixture;
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestComponentFilter()
         {
-            var result = await _client.GeocodeAddress("santa cruz");
-            Assert.IsTrue(result.Results.Count() > 1, "'santa cruz' should return multiple results when used without component filter.");
-            result = await _client.GeocodeAddress("santa cruz", filter: new ComponentFilter { Country = "es" });
-            Assert.IsTrue(result.Results.Count() == 1, "'santa cruz' should return singler result when used with Country=es filter");
+            var result = await ClientFixture.Client.GeocodeAddress("santa cruz");
+            Assert.True(result.Results.Count() > 1, "'santa cruz' should return multiple results when used without component filter.");
+            result = await ClientFixture.Client.GeocodeAddress("santa cruz", filter: new ComponentFilter { Country = "es" });
+            Assert.True(result.Results.Count() == 1, "'santa cruz' should return singler result when used with Country=es filter");
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGeocodeAddressZeroResults()
         {
-            var result = await _client.GeocodeAddress(Guid.NewGuid().ToString("N"));
-            Assert.AreEqual(GeocodeStatus.ZeroResults, result.Status);
+            var result = await ClientFixture.Client.GeocodeAddress(Guid.NewGuid().ToString("N"));
+            Assert.Equal(GeocodeStatus.ZeroResults, result.Status);
         }
 
-        [ExpectedException(typeof(ArgumentNullException))]
-        [TestMethod]
-        public async Task TestGeocodeAddressWithNullAddress()
+        [Fact]
+        public void TestGeocodeAddressWithNullAddress()
         {
-            await _client.GeocodeAddress(null);
-            Assert.Fail();
+            Assert.ThrowsAsync<ArgumentNullException>( () => ClientFixture.Client.GeocodeAddress(null));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGeocodeAddressWithPartialMatch()
         {
             const string address = "21 Henr St, Bristol, UK";
 
-            var result = await _client.GeocodeAddress(address);
-            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
-            Assert.AreEqual(true, result.Results.All(r => r.PartialMatch));
-            Assert.AreEqual(true, result.Results.Length > 0);
+            var result = await ClientFixture.Client.GeocodeAddress(address);
+            Assert.Equal(GeocodeStatus.Ok, result.Status);
+            Assert.Equal(true, result.Results.All(r => r.PartialMatch));
+            Assert.Equal(true, result.Results.Length > 0);
         }
 
-        [TestMethod]
-        [Ignore]  // Unignore after adding client credentials.
+        //[Fact]
         public async Task TestGeocodeAddressWithPartialMatchWithApiForWork()
         {
             var clientId = "[ADD-CLIENT-ID-HERE]";
@@ -69,49 +67,49 @@ namespace GeocodeSharp.Tests.Google
             const string address = "21 Henr St, Bristol, UK";
             var client = new GeocodeClient(clientId, cryptoKey);
             var result = await client.GeocodeAddress(address);
-            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
-            Assert.AreEqual(true, result.Results.All(r => r.PartialMatch));
-            Assert.AreEqual(true, result.Results.Length > 0);
+            Assert.Equal(GeocodeStatus.Ok, result.Status);
+            Assert.Equal(true, result.Results.All(r => r.PartialMatch));
+            Assert.Equal(true, result.Results.Length > 0);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestTestGeocodeAddressWithExactMatch()
         {
             const string address = "21 Henrietta St, Bristol, UK";
 
-            var response = await _client.GeocodeAddress(address);
-            Assert.AreEqual(GeocodeStatus.Ok, response.Status);
-            Assert.AreEqual(false, response.Results.All(r => r.PartialMatch));
-            Assert.AreEqual(true, response.Results.Length == 1);
+            var response = await ClientFixture.Client.GeocodeAddress(address);
+            Assert.Equal(GeocodeStatus.Ok, response.Status);
+            Assert.Equal(false, response.Results.All(r => r.PartialMatch));
+            Assert.Equal(true, response.Results.Length == 1);
 
             var result = response.Results[0];
-            Assert.AreEqual("21 Henrietta St, Bristol BS5 6HU, UK", result.FormattedAddress);
-            Assert.AreEqual(51, (int)result.Geometry.Location.Latitude);
-            Assert.AreEqual(-2, (int)result.Geometry.Location.Longitude);
-            Assert.AreEqual("ChIJS_spyTiOcUgRfgVi31-TvpY", result.PlaceId);
-            Assert.IsTrue(result.Types.Contains("street_address"));
+            Assert.Equal("21 Henrietta St, Bristol BS5 6HU, UK", result.FormattedAddress);
+            Assert.Equal(51, (int)result.Geometry.Location.Latitude);
+            Assert.Equal(-2, (int)result.Geometry.Location.Longitude);
+            Assert.Equal("ChIJS_spyTiOcUgRfgVi31-TvpY", result.PlaceId);
+            Assert.True(result.Types.Contains("street_address"));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGeocodeAddressWithRegion()
         {
-            var result = await _client.GeocodeAddress("London", region: "ca");
-            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
-            Assert.AreEqual("London, ON, Canada", result.Results.First().FormattedAddress);
+            var result = await ClientFixture.Client.GeocodeAddress("London", region: "ca");
+            Assert.Equal(GeocodeStatus.Ok, result.Status);
+            Assert.Equal("London, ON, Canada", result.Results.First().FormattedAddress);
 
-            result = await _client.GeocodeAddress("London", region: "uk");
-            Assert.AreEqual(GeocodeStatus.Ok, result.Status);
-            Assert.AreEqual("London, UK", result.Results.First().FormattedAddress);
+            result = await ClientFixture.Client.GeocodeAddress("London", region: "uk");
+            Assert.Equal(GeocodeStatus.Ok, result.Status);
+            Assert.Equal("London, UK", result.Results.First().FormattedAddress);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGeocodeAddressWithLanguage()
         {
-            var spanishResponse = await _client.GeocodeAddress("Madrid, Caja Mágica", language: "es");
+            var spanishResponse = await ClientFixture.Client.GeocodeAddress("Madrid, Caja Mágica", language: "es");
 
             var result = spanishResponse.Results.First();
-            Assert.AreEqual("Área Metropolitalitana y Corredor del Henares", result.AddressComponents[2].LongName);
-            Assert.AreEqual("España", result.AddressComponents[5].LongName);
+            Assert.Equal("Área Metropolitalitana y Corredor del Henares", result.AddressComponents[2].LongName);
+            Assert.Equal("España", result.AddressComponents[5].LongName);
         }
     }
 }

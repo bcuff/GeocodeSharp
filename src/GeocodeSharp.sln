@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeocodeSharp", "GeocodeSharp\GeocodeSharp.csproj", "{B16BCFA3-57CF-407A-ABD3-E46756673F67}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GeocodeSharp", "GeocodeSharp\GeocodeSharp.xproj", "{B16BCFA3-57CF-407A-ABD3-E46756673F67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeocodeSharp.Tests", "GeocodeSharp.Tests\GeocodeSharp.Tests.csproj", "{E1924EF3-FAAE-44FD-98E3-F32EB42422D7}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GeocodeSharp.Tests", "GeocodeSharp.Tests\GeocodeSharp.Tests.xproj", "{E1924EF3-FAAE-44FD-98E3-F32EB42422D7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{E82E9A47-C299-44DD-845C-ECE5D5B42FF0}"
+	ProjectSection(SolutionItems) = preProject
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<package >
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
@@ -7,15 +7,23 @@
     <authors>$author$</authors>
     <owners>Brandon Cuff</owners>
     <licenseUrl>https://github.com/bcuff/GeocodeSharp/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/bcuff/GeocodeSharp</projectUrl>
-    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <projectUrl>https://github.com/marcocasamento/GeocodeSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Fixed redundant serialization of GeocodeResponse.Status</releaseNotes>
+    <releaseNotes>Upgrade to .net core</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Geocode Address Maps Geo</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="6.0.5" />
+      <group targetFramework=".NETFramework4.5.1">
+        <dependency id="Newtonsoft.Json" version="6.0.5" />
+      </group>
+      <group targetFramework=".NETStandard1.6">
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+      </group>
     </dependencies>
   </metadata>
+  <files>
+    <file src="bin\Release\net451\GeocodeSharp.dll" target="lib\net451\GeocodeSharp.dll" />
+    <file src="bin\Release\netstandard1.6\GeocodeSharp.dll" target="lib\netstandard1.6\GeocodeSharp.dll" />
+  </files>
 </package>
