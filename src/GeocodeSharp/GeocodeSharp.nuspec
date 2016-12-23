@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
+    <id>GeocodeSharp</id>
+    <version>1.5.0.0</version>
     <title>Async Google Geocode API for .NET</title>
-    <authors>$author$</authors>
+    <authors>Brandon Cuff, alexinspire, Johan Nilsson, marcoCasamento</authors>
     <owners>Brandon Cuff</owners>
     <licenseUrl>https://github.com/bcuff/GeocodeSharp/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/bcuff/GeocodeSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>An async wrapper of the Google Geocode API for .NET</description>
     <releaseNotes>Upgrade to .net core</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>Geocode Address Maps Geo</tags>
