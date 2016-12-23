@@ -7,7 +7,7 @@
     <authors>$author$</authors>
     <owners>Brandon Cuff</owners>
     <licenseUrl>https://github.com/bcuff/GeocodeSharp/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/marcocasamento/GeocodeSharp</projectUrl>
+    <projectUrl>https://github.com/bcuff/GeocodeSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Upgrade to .net core</releaseNotes>
