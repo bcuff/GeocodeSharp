@@ -111,5 +111,23 @@ namespace GeocodeSharp.Tests.Google
             Assert.Equal("Área Metropolitalitana y Corredor del Henares", result.AddressComponents[2].LongName);
             Assert.Equal("España", result.AddressComponents[5].LongName);
         }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocoding()
+        {
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(32.715736, -117.161087);
+
+            var result = reverseGeocodingResponse.Results.First();
+            Assert.Equal("402w Broadway, San Diego, CA 92101, USA", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithLanguage()
+        {
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(32.715736, -117.161087, language: "es");
+
+            var result = reverseGeocodingResponse.Results.First();
+            Assert.Equal("402w Broadway, San Diego, CA 92101, EE. UU.", result.FormattedAddress);
+        }
     }
 }
