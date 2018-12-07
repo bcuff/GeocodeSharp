@@ -129,5 +129,46 @@ namespace GeocodeSharp.Tests.Google
             var result = reverseGeocodingResponse.Results.First();
             Assert.Equal("402w Broadway, San Diego, CA 92101, EE. UU.", result.FormattedAddress);
         }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithResultTypeZeroResult()
+        {
+            var resultTypeFilter = new ResultTypeFilter
+            {
+                Airport = true
+            };
+
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(32.715736, -117.161087, resultTypeFilter: resultTypeFilter);
+
+            Assert.Equal(GeocodeStatus.ZeroResults, reverseGeocodingResponse.Status);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithResultType()
+        {
+            var resultTypeFilter = new ResultTypeFilter
+            {
+                Airport = true
+            };
+
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, resultTypeFilter: resultTypeFilter);
+            var result = reverseGeocodingResponse.Results.First();
+
+            Assert.Equal("KOKB CTAF 122.725, Oceanside, CA 92058, USA", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithLocationTypeFilter()
+        {
+            var locationTypeFilter = new LocationTypeFilter()
+            {
+                Rooftop = true
+            };
+
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, locationTypeFilter: locationTypeFilter);
+            var result = reverseGeocodingResponse.Results.First();
+
+            Assert.Equal("480 Airport Rd, Oceanside, CA 92058, USA", result.FormattedAddress);
+        }
     }
 }
