@@ -146,12 +146,15 @@ namespace GeocodeSharp.Tests.Google
         [Fact]
         public async Task TestGeocodeReverseGeocodingWithResultType()
         {
+            var apiKey = "[ADD-API-KEY-HERE]";
+            var client = new GeocodeClient(apiKey);
+
             var resultTypeFilter = new ResultTypeFilter
             {
                 Airport = true
             };
 
-            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, resultTypeFilter: resultTypeFilter);
+            var reverseGeocodingResponse = await client.GeocodeAddress(33.217555, -117.352647, resultTypeFilter: resultTypeFilter);
             var result = reverseGeocodingResponse.Results.First();
 
             Assert.Equal("KOKB CTAF 122.725, Oceanside, CA 92058, USA", result.FormattedAddress);
@@ -160,15 +163,40 @@ namespace GeocodeSharp.Tests.Google
         [Fact]
         public async Task TestGeocodeReverseGeocodingWithLocationTypeFilter()
         {
+            var apiKey = "[ADD-API-KEY-HERE]";
+            var client = new GeocodeClient(apiKey);
+
             var locationTypeFilter = new LocationTypeFilter()
             {
                 Rooftop = true
             };
 
-            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, locationTypeFilter: locationTypeFilter);
+            var reverseGeocodingResponse = await client.GeocodeAddress(33.217555, -117.352647, locationTypeFilter: locationTypeFilter);
             var result = reverseGeocodingResponse.Results.First();
 
             Assert.Equal("480 Airport Rd, Oceanside, CA 92058, USA", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithResultTypeInFreeMode()
+        {
+            var resultTypeFilter = new ResultTypeFilter
+            {
+                Airport = true
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, resultTypeFilter: resultTypeFilter));
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithLocationTypeFilterInFreeMode()
+        {
+            var locationTypeFilter = new LocationTypeFilter()
+            {
+                Rooftop = true
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, locationTypeFilter: locationTypeFilter));
         }
     }
 }

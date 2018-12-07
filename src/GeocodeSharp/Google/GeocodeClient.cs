@@ -101,6 +101,16 @@ namespace GeocodeSharp.Google
         /// <returns>The geocode response.</returns>
         public async Task<GeocodeResponse> GeocodeAddress(double latitude, double longitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null)
         {
+            if (_mode == UsageMode.Free && resultTypeFilter != null)
+            {
+                throw new ArgumentException("You can't use result type filter in free mode, consider running your Geocoding client with API key or client key.");
+            }
+
+            if (_mode == UsageMode.Free && locationTypeFilter != null)
+            {
+                throw new ArgumentException("You can't use location type filter in free mode, consider running your Geocoding client with API key or client key.");
+            }
+
             var request = BuildRequest(latitude, longitude, language, resultTypeFilter, locationTypeFilter);
             var response = await DoRequestAsync(request);
             return JsonConvert.DeserializeObject<GeocodeResponse>(response);
@@ -118,6 +128,17 @@ namespace GeocodeSharp.Google
         /// <returns>The geocode response as JSON.</returns>
         public async Task<string> GeocodeAddressJson(double latitude, double longitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null)
         {
+
+            if (_mode == UsageMode.Free && resultTypeFilter != null)
+            {
+                throw new ArgumentException("You can't use result type filter in free mode, consider running your Geocoding client with API key or client key.");
+            }
+
+            if (_mode == UsageMode.Free && locationTypeFilter != null)
+            {
+                throw new ArgumentException("You can't use location type filter in free mode, consider running your Geocoding client with API key or client key.");
+            }
+
             var request = BuildRequest(latitude, longitude, language, resultTypeFilter, locationTypeFilter);
             return await DoRequestAsync(request);
         }
