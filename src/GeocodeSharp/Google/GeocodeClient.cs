@@ -94,16 +94,32 @@ namespace GeocodeSharp.Google
         /// https://developers.google.com/maps/documentation/geocoding/#GeocodingRequests
         /// </summary>
         /// <param name="latitude">The latitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
-        /// <param name="longtitude">The longtitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
+        /// <param name="longitude">The longitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
         /// <param name="language"> The language in which to return results. Address components will all be returned in the same language, which is chosen from the first component. Should names not be available in the preferred language, the closest match will be used.</param>
-        /// <param name="locationTypeFilter">The location type filter parameter does not restrict the search to the specified location type(s). Rather, the location type filter acts as a post-search filter: the API fetches all results for the specified latitude and longtitude, then discards those results that do not match the specified location type(s).</param>
-        /// <param name="resultTypeFilter">The result type filter parameter does not restrict the search to the specified address type(s). Rather, the result type filter acts as a post-search filter: the API fetches all results for the specified latitude and longtitude, then discards those results that do not match the specified address type(s).</param>
+        /// <param name="locationTypeFilter">The location type filter parameter does not restrict the search to the specified location type(s). Rather, the location type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified location type(s).</param>
+        /// <param name="resultTypeFilter">The result type filter parameter does not restrict the search to the specified address type(s). Rather, the result type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified address type(s).</param>
         /// <returns>The geocode response.</returns>
-        public async Task<GeocodeResponse> GeocodeAddress(double latitude, double longtitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null)
+        public async Task<GeocodeResponse> GeocodeAddress(double latitude, double longitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null)
         {
-            var request = BuildRequest(latitude, longtitude, language, resultTypeFilter, locationTypeFilter);
+            var request = BuildRequest(latitude, longitude, language, resultTypeFilter, locationTypeFilter);
             var response = await DoRequestAsync(request);
             return JsonConvert.DeserializeObject<GeocodeResponse>(response);
+        }
+
+        /// <summary>
+        /// Calls Google's geocode API with the specified address and optional region.
+        /// https://developers.google.com/maps/documentation/geocoding/#GeocodingRequests
+        /// </summary>
+        /// <param name="latitude">The latitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
+        /// <param name="longitude">The longitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
+        /// <param name="language"> The language in which to return results. Address components will all be returned in the same language, which is chosen from the first component. Should names not be available in the preferred language, the closest match will be used.</param>
+        /// <param name="locationTypeFilter">The location type filter parameter does not restrict the search to the specified location type(s). Rather, the location type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified location type(s).</param>
+        /// <param name="resultTypeFilter">The result type filter parameter does not restrict the search to the specified address type(s). Rather, the result type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified address type(s).</param>
+        /// <returns>The geocode response as JSON.</returns>
+        public async Task<string> GeocodeAddressJson(double latitude, double longitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null)
+        {
+            var request = BuildRequest(latitude, longitude, language, resultTypeFilter, locationTypeFilter);
+            return await DoRequestAsync(request);
         }
 
         /// <summary>
@@ -114,7 +130,7 @@ namespace GeocodeSharp.Google
         /// <param name="region">The region code, specified as a ccTLD ("top-level domain") two-character value. This parameter will only influence, not fully restrict, results from the geocoder.</param>
         /// <param name="language"> The language in which to return results. Address components will all be returned in the same language, which is chosen from the first component. Should names not be available in the preferred language, the closest match will be used.</param>
         /// <param name="filter">A component filter for which you wish to obtain a geocode. The component filter swill fully restrict the results from the geocoder. Only the results that match all the filters will be returned. Each address component can only be specified either in the address parameter or as a component filter, but not both. Doing so may result in ZERO_RESULTS.</param>
-        /// <returns>The geocode response.</returns>
+        /// <returns>The geocode response as JSON.</returns>
         public async Task<string> GeocodeAddressJson(string address, string region = null, ComponentFilter filter = null, string language = null)
         {
             var request = BuildRequest(address, region, language, filter);

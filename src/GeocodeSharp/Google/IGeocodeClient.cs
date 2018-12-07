@@ -21,12 +21,24 @@ namespace GeocodeSharp.Google
         /// https://developers.google.com/maps/documentation/geocoding/#GeocodingRequests
         /// </summary>
         /// <param name="latitude">The latitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
-        /// <param name="longtitude">The longtitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
+        /// <param name="longitude">The longitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
         /// <param name="language"> The language in which to return results. Address components will all be returned in the same language, which is chosen from the first component. Should names not be available in the preferred language, the closest match will be used.</param>
-        /// <param name="locationTypeFilter">The location type filter parameter does not restrict the search to the specified location type(s). Rather, the location type filter acts as a post-search filter: the API fetches all results for the specified latitude and longtitude, then discards those results that do not match the specified location type(s).</param>
-        /// <param name="resultTypeFilter">The result type filter parameter does not restrict the search to the specified address type(s). Rather, the result type filter acts as a post-search filter: the API fetches all results for the specified latitude and longtitude, then discards those results that do not match the specified address type(s).</param>
+        /// <param name="locationTypeFilter">The location type filter parameter does not restrict the search to the specified location type(s). Rather, the location type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified location type(s).</param>
+        /// <param name="resultTypeFilter">The result type filter parameter does not restrict the search to the specified address type(s). Rather, the result type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified address type(s).</param>
         /// <returns>The geocode response.</returns>
-        Task<GeocodeResponse> GeocodeAddress(double latitude, double longtitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null);
+        Task<GeocodeResponse> GeocodeAddress(double latitude, double longitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null);
+
+        /// <summary>
+        /// Calls Google's geocode API with the specified address and optional region.
+        /// https://developers.google.com/maps/documentation/geocoding/#GeocodingRequests
+        /// </summary>
+        /// <param name="latitude">The latitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
+        /// <param name="longitude">The longitude value specifying the location for which you wish to obtain the closest, human-readable address.</param>
+        /// <param name="language"> The language in which to return results. Address components will all be returned in the same language, which is chosen from the first component. Should names not be available in the preferred language, the closest match will be used.</param>
+        /// <param name="locationTypeFilter">The location type filter parameter does not restrict the search to the specified location type(s). Rather, the location type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified location type(s).</param>
+        /// <param name="resultTypeFilter">The result type filter parameter does not restrict the search to the specified address type(s). Rather, the result type filter acts as a post-search filter: the API fetches all results for the specified latitude and longitude, then discards those results that do not match the specified address type(s).</param>
+        /// <returns>The geocode response as JSON.</returns>
+        Task<string> GeocodeAddressJson(double latitude, double longitude, string language = null, ResultTypeFilter resultTypeFilter = null, LocationTypeFilter locationTypeFilter = null);
 
         /// <summary>
         /// Calls Google's geocode API with the specified address and optional region.
