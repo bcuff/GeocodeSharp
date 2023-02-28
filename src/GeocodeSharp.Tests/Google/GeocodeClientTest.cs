@@ -111,5 +111,92 @@ namespace GeocodeSharp.Tests.Google
             Assert.Equal("Área Metropolitalitana y Corredor del Henares", result.AddressComponents[2].LongName);
             Assert.Equal("España", result.AddressComponents[5].LongName);
         }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocoding()
+        {
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(32.715736, -117.161087);
+
+            var result = reverseGeocodingResponse.Results.First();
+            Assert.Equal("402w Broadway, San Diego, CA 92101, USA", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithLanguage()
+        {
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(32.715736, -117.161087, language: "es");
+
+            var result = reverseGeocodingResponse.Results.First();
+            Assert.Equal("402w Broadway, San Diego, CA 92101, EE. UU.", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithResultTypeZeroResult()
+        {
+            var resultTypeFilter = new ResultTypeFilter
+            {
+                Airport = true
+            };
+
+            var reverseGeocodingResponse = await ClientFixture.Client.GeocodeAddress(32.715736, -117.161087, resultTypeFilter: resultTypeFilter);
+
+            Assert.Equal(GeocodeStatus.ZeroResults, reverseGeocodingResponse.Status);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithResultType()
+        {
+            var apiKey = "[ADD-API-KEY-HERE]";
+            var client = new GeocodeClient(apiKey);
+
+            var resultTypeFilter = new ResultTypeFilter
+            {
+                Airport = true
+            };
+
+            var reverseGeocodingResponse = await client.GeocodeAddress(33.217555, -117.352647, resultTypeFilter: resultTypeFilter);
+            var result = reverseGeocodingResponse.Results.First();
+
+            Assert.Equal("KOKB CTAF 122.725, Oceanside, CA 92058, USA", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithLocationTypeFilter()
+        {
+            var apiKey = "[ADD-API-KEY-HERE]";
+            var client = new GeocodeClient(apiKey);
+
+            var locationTypeFilter = new LocationTypeFilter()
+            {
+                Rooftop = true
+            };
+
+            var reverseGeocodingResponse = await client.GeocodeAddress(33.217555, -117.352647, locationTypeFilter: locationTypeFilter);
+            var result = reverseGeocodingResponse.Results.First();
+
+            Assert.Equal("480 Airport Rd, Oceanside, CA 92058, USA", result.FormattedAddress);
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithResultTypeInFreeMode()
+        {
+            var resultTypeFilter = new ResultTypeFilter
+            {
+                Airport = true
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, resultTypeFilter: resultTypeFilter));
+        }
+
+        [Fact]
+        public async Task TestGeocodeReverseGeocodingWithLocationTypeFilterInFreeMode()
+        {
+            var locationTypeFilter = new LocationTypeFilter()
+            {
+                Rooftop = true
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await ClientFixture.Client.GeocodeAddress(33.217555, -117.352647, locationTypeFilter: locationTypeFilter));
+        }
     }
 }
