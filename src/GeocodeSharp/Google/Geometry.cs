@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace GeocodeSharp.Google
 {
     public class Geometry
     {
-        [JsonProperty("location")]
+        [JsonProperty("location"), JsonPropertyName("location")]
         public GeoCoordinate Location { get; set; }
 
         public LocationType LocationType
@@ -22,13 +23,13 @@ namespace GeocodeSharp.Google
             }
         }
 
-        [JsonProperty("location_type")]
+        [JsonProperty("location_type"), JsonPropertyName("location_type")]
         public string LocationTypeText { get; set; }
 
-        [JsonProperty("viewport")]
+        [JsonProperty("viewport"), JsonPropertyName("viewport")]
         public GeoViewport Viewport { get; set; }
 
-        [JsonProperty("bounds")]
+        [JsonProperty("bounds"), JsonPropertyName("bounds")]
         public GeoViewport Bounds { get; set; }
     }
 }

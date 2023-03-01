@@ -1,13 +1,14 @@
 ﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace GeocodeSharp.Google
 {
     public class GeocodeResponse
     {
-        [JsonProperty("results")]
+        [JsonProperty("results"), JsonPropertyName("results")]
         public GeocodeResult[] Results { get; set; }
 
-        [JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore, System.Text.Json.Serialization.JsonIgnore]
         public GeocodeStatus Status
         {
             get
@@ -25,7 +26,7 @@ namespace GeocodeSharp.Google
             }
         }
 
-        [JsonProperty("status")]
+        [JsonProperty("status"), JsonPropertyName("status")]
         public string StatusText { get; set; }
     }
 }
