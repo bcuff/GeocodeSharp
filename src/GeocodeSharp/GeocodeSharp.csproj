@@ -5,7 +5,7 @@
     <Description>An async wrapper of the Google Geocode API for .NET</Description>
     <Company>Brandon Cuff, alexinspire, Johan Nilsson, marcoCasamento</Company>
     <Authors>Brandon Cuff, alexinspire, Johan Nilsson, marcoCasamento</Authors>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="[13.0.2,]" />
